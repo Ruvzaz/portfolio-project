@@ -64,5 +64,16 @@ export const AuthService = {
     async deleteUser(id: string): Promise<void> {
         await new Promise((resolve) => setTimeout(resolve, 500));
         MOCK_USER_DB = MOCK_USER_DB.filter(user => user.id !== id);
+    },
+
+    // เพิ่มต่อท้ายใน AuthService
+    async getStats() {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        return {
+            totalUsers: MOCK_USER_DB.length,
+            admins: MOCK_USER_DB.filter(u => u.role === 'admin').length,
+            users: MOCK_USER_DB.filter(u => u.role === 'user').length,
+        };
     }
 };
+

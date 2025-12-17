@@ -70,5 +70,14 @@ export const InventoryService = {
     async deleteProduct(id: string): Promise<void> {
         await new Promise((resolve) => setTimeout(resolve, 800));
         MOCK_PRODUCTS = MOCK_PRODUCTS.filter((p) => p.id !== id);
+    },
+    async getStats() {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const totalItems = MOCK_PRODUCTS.length;
+        const totalStock = MOCK_PRODUCTS.reduce((acc, p) => acc + p.stock, 0);
+        const lowStockItems = MOCK_PRODUCTS.filter(p => p.stock < 5).length;
+        const totalValue = MOCK_PRODUCTS.reduce((acc, p) => acc + (p.price * p.stock), 0);
+
+        return { totalItems, totalStock, lowStockItems, totalValue };
     }
 };
