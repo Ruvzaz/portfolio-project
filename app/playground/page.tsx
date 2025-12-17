@@ -23,6 +23,12 @@ import { RefreshCcw } from "lucide-react"; // ไอคอนรีเฟรช
 import { LoginForm, UserList, UserProfile, IdentityProvider, useIdentity } from "@/modules/identity";
 import { ProductList, ProductManager } from "@/modules/inventory";
 import { WalletCard, TransactionList } from "@/modules/payment";
+import { QuizManager } from "@/modules/quiz";
+import { BrainCircuit } from "lucide-react"; // อย่าลืม import icon
+import { ChatLayout } from "@/modules/chat";
+import { MessageSquare } from "lucide-react"; // Import Icon ใหม่
+
+
 
 // --- MODULE CONFIG ---
 const MODULES = [
@@ -30,6 +36,9 @@ const MODULES = [
     { id: "auth", name: "Identity Module", icon: Users, description: "จัดการ User, Authentication และ Permissions" },
     { id: "payment", name: "Payment Module", icon: CreditCard, description: "จำลอง Transaction และ Wallet" },
     { id: "inventory", name: "Inventory Module", icon: Box, description: "จัดการ Stock สินค้าและ SKU" },
+    { id: "quiz", name: "Quiz Game", icon: BrainCircuit, description: "Play to Earn: ตอบคำถามชิงเงินรางวัล" },
+    { id: "chat", name: "Team Chat", icon: MessageSquare, description: "Real-time communication with persistence" },
+
 ];
 
 // -----------------------------------------------------------------------------
@@ -56,9 +65,11 @@ function AuthWorkspace() {
                 </div>
 
                 {/* RIGHT COLUMN: Main Content / User List OR User Profile */}
-                <div className="w-full flex-1 min-w-0 animate-in slide-in-from-right-8 fade-in duration-500">
-                    {isAdmin ? <UserList /> : (user && <UserProfile />)}
-                </div>
+                {user && (
+                    <div className="w-full flex-1 min-w-0 animate-in slide-in-from-right-8 fade-in duration-500">
+                        {isAdmin ? <UserList /> : <UserProfile />}
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -207,10 +218,37 @@ export default function PlaygroundPage() {
                                 <ProductManager />
                             </div>
                         )}
+
+                        {activeModule === "quiz" && (
+                            <div className="w-full max-w-6xl mx-auto space-y-8 animate-in fade-in zoom-in duration-300">
+                                <AuthGuard>
+                                    <QuizManager />
+                                </AuthGuard>
+
+                            </div>
+                        )}
+
+                        {activeModule === "chat" && (
+                            < div className="w-full max-w-6xl mx-auto space-y-6 animate-in fade-in zoom-in duration-300">
+                                <div className="text-center space-y-2 mb-4">
+                                    <h2 className="text-xl font-bold text-zinc-100">Team Communication</h2>
+                                    <p className="text-zinc-400 text-sm">
+                                        ลอง Login สลับ User ดูสิครับ! ข้อความที่ User A ส่งหา User B จะไปโผล่ที่ User B จริงๆ
+                                    </p>
+                                </div>
+                                <AuthGuard>
+                                    <ChatLayout />
+                                </AuthGuard>
+                            </div>
+
+
+                        )}
+
+                        {/* Active Module ปิด */}
                     </div>
                 </main>
-            </div>
-        </IdentityProvider>
+            </div >
+        </IdentityProvider >
     );
 }
 
