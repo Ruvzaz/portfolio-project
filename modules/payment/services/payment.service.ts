@@ -95,7 +95,15 @@ export const PaymentService = {
 
         return newTx;
     },
+    async deleteWallet(userId: string): Promise<void> {
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
+        const wallets = getWallets();
+        // ลบ Key ของ User คนนั้นทิ้ง
+        delete wallets[userId];
+
+        saveWallets(wallets); // บันทึกค่าใหม่
+    },
     async getStats() {
         await new Promise((resolve) => setTimeout(resolve, 500));
         const wallets = getWallets();
