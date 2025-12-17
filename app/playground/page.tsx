@@ -20,9 +20,15 @@ import {
 import { useDashboard } from "@/hooks/useDashboard";
 import { RefreshCcw } from "lucide-react"; // ไอคอนรีเฟรช
 // Import Hooks และ Component จาก Module
-import { LoginForm, UserList, IdentityProvider, useIdentity } from "@/modules/identity";
+import { LoginForm, UserList, UserProfile, IdentityProvider, useIdentity } from "@/modules/identity";
 import { ProductList, ProductManager } from "@/modules/inventory";
 import { WalletCard, TransactionList } from "@/modules/payment";
+import { QuizManager } from "@/modules/quiz";
+import { BrainCircuit } from "lucide-react"; // อย่าลืม import icon
+import { ChatLayout } from "@/modules/chat";
+import { MessageSquare } from "lucide-react"; // Import Icon ใหม่
+
+
 
 // --- MODULE CONFIG ---
 const MODULES = [
@@ -30,6 +36,9 @@ const MODULES = [
     { id: "auth", name: "Identity Module", icon: Users, description: "จัดการ User, Authentication และ Permissions" },
     { id: "payment", name: "Payment Module", icon: CreditCard, description: "จำลอง Transaction และ Wallet" },
     { id: "inventory", name: "Inventory Module", icon: Box, description: "จัดการ Stock สินค้าและ SKU" },
+    { id: "quiz", name: "Quiz Game", icon: BrainCircuit, description: "Play to Earn: ตอบคำถามชิงเงินรางวัล" },
+    { id: "chat", name: "Team Chat", icon: MessageSquare, description: "Real-time communication with persistence" },
+
 ];
 
 // -----------------------------------------------------------------------------
@@ -40,27 +49,25 @@ function AuthWorkspace() {
     const isAdmin = user?.role === 'admin';
 
     return (
-        <div className="w-full max-w-6xl mx-auto animate-in fade-in zoom-in duration-300">
-            <div className="text-center space-y-2 mb-8">
-                <h2 className="text-xl md:text-2xl font-bold text-zinc-100">Identity & Access Control</h2>
-                <p className="text-zinc-400 text-xs md:text-sm max-w-lg mx-auto">
+        <div className="w-full max-w-7xl mx-auto animate-in fade-in zoom-in duration-300">
+            <div className="text-center space-y-3 mb-10">
+                <h2 className="text-2xl md:text-3xl font-bold text-zinc-100">Identity & Access Control</h2>
+                <p className="text-zinc-400 text-sm md:text-base max-w-2xl mx-auto">
                     Module นี้ทำงานแบบ <strong>Self-contained</strong>: มี Logic, State และ UI เป็นของตัวเอง
                     โดยใช้ Context ภายในเพื่อแชร์สถานะ Login
                 </p>
             </div>
 
-            <div className={`
-            min-h-[50vh] flex flex-col xl:flex-row gap-8 transition-all duration-500
-            justify-center items-center 
-            ${isAdmin ? 'xl:items-start' : ''} 
-        `}>
-                <div className="w-full max-w-sm shrink-0">
+            <div className={`flex flex-col lg:flex-row gap-8 items-start ${user ? '' : 'justify-center'}`}>
+                {/* LEFT COLUMN: Control Panel / Profile */}
+                <div className={`w-full max-w-md shrink-0 lg:sticky lg:top-24 ${user ? 'mx-auto lg:mx-0 lg:w-96' : 'mx-auto'}`}>
                     <LoginForm />
                 </div>
 
-                {isAdmin && (
-                    <div className="w-full max-w-sm shrink-0 xl:-mt-6 animate-in slide-in-from-right-8 fade-in duration-500">
-                        <UserList />
+                {/* RIGHT COLUMN: Main Content / User List OR User Profile */}
+                {user && (
+                    <div className="w-full flex-1 min-w-0 animate-in slide-in-from-right-8 fade-in duration-500">
+                        {isAdmin ? <UserList /> : <UserProfile />}
                     </div>
                 )}
             </div>
@@ -121,7 +128,7 @@ export default function PlaygroundPage() {
                 </aside>
 
                 {/* MAIN CONTENT */}
-                <main className="flex-1 p-4 md:p-8 overflow-y-auto w-full">
+                <main className="flex-1 p-6 md:p-10 overflow-y-auto w-full">
 
                     {/* MOBILE NAV */}
                     <div className="md:hidden mb-8 animate-in slide-in-from-top-4 duration-500">
@@ -152,12 +159,12 @@ export default function PlaygroundPage() {
                     </div>
 
                     {/* HEADER */}
-                    <header className="mb-6 md:mb-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                    <header className="mb-8 md:mb-10 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                         <div>
-                            <h1 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2 tracking-tight">{currentModule?.name}</h1>
-                            <p className="text-sm md:text-base text-zinc-400">{currentModule?.description}</p>
+                            <h1 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">{currentModule?.name}</h1>
+                            <p className="text-base md:text-lg text-zinc-400">{currentModule?.description}</p>
                         </div>
-                        <Badge variant="outline" className="w-fit border-blue-500/50 text-blue-400 bg-blue-950/10 px-3 py-1">
+                        <Badge variant="outline" className="w-fit border-blue-500/50 text-blue-400 bg-blue-950/10 px-4 py-2 text-sm">
                             Module Active
                         </Badge>
                     </header>
@@ -173,9 +180,9 @@ export default function PlaygroundPage() {
 
                         {activeModule === "payment" && (
                             <div className="w-full max-w-4xl mx-auto space-y-8 animate-in fade-in zoom-in duration-300">
-                                <div className="text-center space-y-2 mb-8">
-                                    <h2 className="text-xl md:text-2xl font-bold text-zinc-100">Digital Wallet & Transactions</h2>
-                                    <p className="text-zinc-400 text-sm max-w-lg mx-auto">
+                                <div className="text-center space-y-3 mb-10">
+                                    <h2 className="text-2xl md:text-3xl font-bold text-zinc-100">Digital Wallet & Transactions</h2>
+                                    <p className="text-zinc-400 text-sm md:text-base max-w-2xl mx-auto">
                                         Module นี้จัดการระบบการเงิน: ยอดเงินคงเหลือ, การเติมเงิน, และประวัติธุรกรรม <br />
                                         ทำงานร่วมกับ Identity เพื่อแยกกระเป๋าเงินของแต่ละ User
                                     </p>
@@ -196,9 +203,9 @@ export default function PlaygroundPage() {
 
                         {activeModule === "inventory" && (
                             <div className="w-full max-w-6xl mx-auto space-y-8 animate-in fade-in zoom-in duration-300">
-                                <div className="text-center space-y-2 mb-8">
-                                    <h2 className="text-xl md:text-2xl font-bold text-zinc-100">Inventory & Store</h2>
-                                    <p className="text-zinc-400 text-sm max-w-lg mx-auto">
+                                <div className="text-center space-y-3 mb-10">
+                                    <h2 className="text-2xl md:text-3xl font-bold text-zinc-100">Inventory & Store</h2>
+                                    <p className="text-zinc-400 text-sm md:text-base max-w-2xl mx-auto">
                                         Module นี้สาธิต <strong>Inter-module Communication</strong> และ <strong>CRUD Management</strong><br />
                                         User ทั่วไปซื้อของได้ แต่ Admin เท่านั้นที่จัดการสินค้าได้
                                     </p>
@@ -211,10 +218,37 @@ export default function PlaygroundPage() {
                                 <ProductManager />
                             </div>
                         )}
+
+                        {activeModule === "quiz" && (
+                            <div className="w-full max-w-6xl mx-auto space-y-8 animate-in fade-in zoom-in duration-300">
+                                <AuthGuard>
+                                    <QuizManager />
+                                </AuthGuard>
+
+                            </div>
+                        )}
+
+                        {activeModule === "chat" && (
+                            < div className="w-full max-w-6xl mx-auto space-y-6 animate-in fade-in zoom-in duration-300">
+                                <div className="text-center space-y-2 mb-4">
+                                    <h2 className="text-xl font-bold text-zinc-100">Team Communication</h2>
+                                    <p className="text-zinc-400 text-sm">
+                                        ลอง Login สลับ User ดูสิครับ! ข้อความที่ User A ส่งหา User B จะไปโผล่ที่ User B จริงๆ
+                                    </p>
+                                </div>
+                                <AuthGuard>
+                                    <ChatLayout />
+                                </AuthGuard>
+                            </div>
+
+
+                        )}
+
+                        {/* Active Module ปิด */}
                     </div>
                 </main>
-            </div>
-        </IdentityProvider>
+            </div >
+        </IdentityProvider >
     );
 }
 
@@ -308,17 +342,17 @@ function OverviewComponent() {
 function StatsCard({ title, value, sub, color, valueColor = "text-white", icon: Icon }: any) {
     return (
         <Card className="bg-zinc-900 border-zinc-800 shadow-lg relative overflow-hidden group">
-            <div className={`absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity ${color === 'green' ? 'text-green-500' : 'text-blue-500'}`}>
-                {Icon && <Icon className="w-16 h-16" />}
+            <div className={`absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity ${color === 'green' ? 'text-green-500' : 'text-blue-500'}`}>
+                {Icon && <Icon className="w-20 h-20" />}
             </div>
-            <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-zinc-400 uppercase tracking-wider flex items-center gap-2">
+            <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
                     {title}
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <div className={`text-3xl font-bold ${valueColor}`}>{value}</div>
-                <p className="text-xs text-zinc-500 mt-1 flex items-center gap-1 relative z-10">
+                <div className={`text-4xl font-bold ${valueColor} mb-2`}>{value}</div>
+                <p className="text-sm text-zinc-500 flex items-center gap-2 relative z-10">
                     {color === 'green' && <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse" />}
                     {color === 'orange' && <span className="inline-block w-2 h-2 bg-orange-500 rounded-full animate-pulse" />}
                     {sub}

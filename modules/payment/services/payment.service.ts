@@ -73,12 +73,12 @@ export const PaymentService = {
         return newTx;
     },
 
-    async topUp(userId: string, amount: number): Promise<Transaction> {
+    async topUp(userId: string, amount: number, description: string = "Top Up via Mobile Banking"): Promise<Transaction> {
         await new Promise((resolve) => setTimeout(resolve, 800));
 
         const wallets = getWallets();
         wallets[userId] = (wallets[userId] || 0) + amount;
-        saveWallets(wallets); // ✅ บันทึกยอดเงินใหม่
+        saveWallets(wallets);
 
         const txs = getTxs();
         const newTx: Transaction = {
@@ -86,16 +86,25 @@ export const PaymentService = {
             userId,
             type: "deposit",
             amount,
-            description: "Top Up via Mobile Banking",
+            // ✅ ใช้ description ที่รับมา (หรือค่า Default)
+            description: description,
             timestamp: new Date().toISOString(),
             status: "success",
         };
         txs.unshift(newTx);
-        saveTxs(txs); // ✅ บันทึกประวัติใหม่
+        saveTxs(txs);
 
         return newTx;
     },
+    async deleteWallet(userId: string): Promise<void> {
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
+        const wallets = getWallets();
+        // ลบ Key ของ User คนนั้นทิ้ง
+        delete wallets[userId];
+
+        saveWallets(wallets); // บันทึกค่าใหม่
+    },
     async getStats() {
         await new Promise((resolve) => setTimeout(resolve, 500));
         const wallets = getWallets();

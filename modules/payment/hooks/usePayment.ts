@@ -47,11 +47,12 @@ export function usePayment() {
     };
 
     // เติมเงิน
-    const topUp = async (amount: number) => {
+    const topUp = async (amount: number, description?: string) => {
         if (!user) return;
         setIsProcessing(true);
         try {
-            await PaymentService.topUp(user.id, amount);
+            // ✅ ส่ง description ต่อไปให้ Service
+            await PaymentService.topUp(user.id, amount, description);
             await fetchData();
         } catch (error) {
             alert("Top Up Failed");
