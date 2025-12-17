@@ -1,14 +1,14 @@
-// src/app/layout.tsx
 import type { Metadata } from "next";
-import { Inter } from "next/font/google"; // หรือฟอนต์อื่นที่คุณชอบ
+import { Inter } from "next/font/google";
 import "./globals.css";
+// ... imports อื่นๆ
+
+// ✅ 1. Import Toaster มา
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "Wuttichai",
-  description: "My Digital Playground",
-};
+// ... metadata
 
 export default function RootLayout({
   children,
@@ -16,10 +16,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // เติม class="dark" ตรงนี้ครับ เพื่อบังคับ Dark Mode ตลอดเวลา
     <html lang="en" className="dark">
       <body className={`${inter.className} bg-background text-foreground antialiased`}>
         {children}
+
+        {/* ✅ 2. วาง Component นี้ไว้ล่างสุด ก่อนปิด body */}
+        {/* richColors ทำให้ toast มีสีเขียว/แดง ตามสถานะ */}
+        <Toaster position="bottom-right" richColors />
       </body>
     </html>
   );
